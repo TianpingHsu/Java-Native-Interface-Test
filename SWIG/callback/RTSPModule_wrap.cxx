@@ -768,34 +768,34 @@ SwigDirector_FrameCallback::~SwigDirector_FrameCallback() {
 }
 
 
-void SwigDirector_FrameCallback::OnFrame(char const *data, unsigned int len, unsigned int timestamp) {
+void SwigDirector_FrameCallback::OnFrame(void const *pData, int nSize, unsigned int timestamp) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jstring jdata = 0 ;
-  jlong jlen  ;
+  jbyteArray jpData = 0 ;
   jlong jtimestamp  ;
   
   if (!swig_override[0]) {
-    FrameCallback::OnFrame(data,len,timestamp);
+    FrameCallback::OnFrame(pData,nSize,timestamp);
     return;
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jdata = 0;
-    if (data) {
-      jdata = jenv->NewStringUTF((const char *)data);
-      if (!jdata) return ;
+    jpData = 0;
+    if (pData) {
+      jpData = jenv->NewByteArray((jsize)nSize);
+      if (!jpData) return ;
+      jenv->SetByteArrayRegion(jpData, 0, (jsize)nSize, (jbyte *)pData);
     }
-    Swig::LocalRefGuard data_refguard(jenv, jdata);
-    jlen = (jlong) len;
+    Swig::LocalRefGuard pData_refguard(jenv, jpData);
     jtimestamp = (jlong) timestamp;
-    jenv->CallStaticVoidMethod(Swig::jclass_RTSPModuleJNI, Swig::director_method_ids[0], swigjobj, jdata, jlen, jtimestamp);
+    jenv->CallStaticVoidMethod(Swig::jclass_RTSPModuleJNI, Swig::director_method_ids[0], swigjobj, jpData, jtimestamp);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       Swig::DirectorException::raise(jenv, swigerror);
     }
     
+    if (jpData && pData) jenv->GetByteArrayRegion(jpData, 0, (jsize)nSize, (jbyte *)pData);
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in FrameCallback::OnFrame ");
   }
@@ -809,7 +809,7 @@ void SwigDirector_FrameCallback::swig_connect_director(JNIEnv *jenv, jobject jse
     jmethodID base_methid;
   } methods[] = {
     {
-      "OnFrame", "(Ljava/lang/String;JJ)V", NULL 
+      "OnFrame", "([BJ)V", NULL 
     }
   };
   
@@ -853,47 +853,59 @@ SWIGEXPORT void JNICALL Java_RTSPModuleJNI_delete_1FrameCallback(JNIEnv *jenv, j
 }
 
 
-SWIGEXPORT void JNICALL Java_RTSPModuleJNI_FrameCallback_1OnFrame(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3, jlong jarg4) {
+SWIGEXPORT void JNICALL Java_RTSPModuleJNI_FrameCallback_1OnFrame(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg4) {
   FrameCallback *arg1 = (FrameCallback *) 0 ;
-  char *arg2 = (char *) 0 ;
-  unsigned int arg3 ;
+  void *arg2 = (void *) 0 ;
+  int arg3 ;
   unsigned int arg4 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(FrameCallback **)&jarg1; 
-  arg2 = 0;
-  if (jarg2) {
-    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
-    if (!arg2) return ;
+  {
+    if (jarg2) {
+      arg2 = (void *) jenv->GetByteArrayElements(jarg2, 0);
+      arg3 = (int) jenv->GetArrayLength(jarg2);
+    } else {
+      arg2 = 0;
+      arg3 = 0;
+    }
   }
-  arg3 = (unsigned int)jarg3; 
   arg4 = (unsigned int)jarg4; 
-  (arg1)->OnFrame((char const *)arg2,arg3,arg4);
-  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  (arg1)->OnFrame((void const *)arg2,arg3,arg4);
+  {
+    if (jarg2) jenv->ReleaseByteArrayElements(jarg2, (jbyte *)arg2, 0);
+  }
+  
 }
 
 
-SWIGEXPORT void JNICALL Java_RTSPModuleJNI_FrameCallback_1OnFrameSwigExplicitFrameCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3, jlong jarg4) {
+SWIGEXPORT void JNICALL Java_RTSPModuleJNI_FrameCallback_1OnFrameSwigExplicitFrameCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg4) {
   FrameCallback *arg1 = (FrameCallback *) 0 ;
-  char *arg2 = (char *) 0 ;
-  unsigned int arg3 ;
+  void *arg2 = (void *) 0 ;
+  int arg3 ;
   unsigned int arg4 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(FrameCallback **)&jarg1; 
-  arg2 = 0;
-  if (jarg2) {
-    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
-    if (!arg2) return ;
+  {
+    if (jarg2) {
+      arg2 = (void *) jenv->GetByteArrayElements(jarg2, 0);
+      arg3 = (int) jenv->GetArrayLength(jarg2);
+    } else {
+      arg2 = 0;
+      arg3 = 0;
+    }
   }
-  arg3 = (unsigned int)jarg3; 
   arg4 = (unsigned int)jarg4; 
-  (arg1)->FrameCallback::OnFrame((char const *)arg2,arg3,arg4);
-  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  (arg1)->FrameCallback::OnFrame((void const *)arg2,arg3,arg4);
+  {
+    if (jarg2) jenv->ReleaseByteArrayElements(jarg2, (jbyte *)arg2, 0);
+  }
+  
 }
 
 
@@ -986,7 +998,7 @@ SWIGEXPORT void JNICALL Java_RTSPModuleJNI_swig_1module_1init(JNIEnv *jenv, jcla
     const char *signature;
   } methods[1] = {
     {
-      "SwigDirector_FrameCallback_OnFrame", "(LFrameCallback;Ljava/lang/String;JJ)V" 
+      "SwigDirector_FrameCallback_OnFrame", "(LFrameCallback;[BJ)V" 
     }
   };
   Swig::jclass_RTSPModuleJNI = (jclass) jenv->NewGlobalRef(jcls);

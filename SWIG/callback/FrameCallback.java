@@ -50,8 +50,8 @@ public class FrameCallback {
     RTSPModuleJNI.FrameCallback_change_ownership(this, swigCPtr, true);
   }
 
-  public void OnFrame(String data, long len, long timestamp) {
-    if (getClass() == FrameCallback.class) RTSPModuleJNI.FrameCallback_OnFrame(swigCPtr, this, data, len, timestamp); else RTSPModuleJNI.FrameCallback_OnFrameSwigExplicitFrameCallback(swigCPtr, this, data, len, timestamp);
+  public void OnFrame(byte[] pData, long timestamp) {
+    if (getClass() == FrameCallback.class) RTSPModuleJNI.FrameCallback_OnFrame(swigCPtr, this, pData, timestamp); else RTSPModuleJNI.FrameCallback_OnFrameSwigExplicitFrameCallback(swigCPtr, this, pData, timestamp);
   }
 
   public FrameCallback() {

@@ -1,3 +1,5 @@
+import java.io.*;
+import java.util.*;
 class JavaCallback extends FrameCallback
 {
     public JavaCallback()
@@ -5,8 +7,9 @@ class JavaCallback extends FrameCallback
         super();
     }
 
-    public void OnFrame(String data, long len, long timestamp)
+    public void OnFrame(byte[] pData, long timestamp) 
     {
         System.out.println("JavaCallback.run()");
+        System.out.println(Arrays.toString(pData));
     }
 }

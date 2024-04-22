@@ -17,7 +17,7 @@ public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
     SwigDirector_FrameCallback(JNIEnv *jenv);
     virtual ~SwigDirector_FrameCallback();
-    virtual void OnFrame(char const *data, unsigned int len, unsigned int timestamp);
+    virtual void OnFrame(void const *pData, int nSize, unsigned int timestamp);
 public:
     bool swig_overrides(int n) {
       return (n < 1 ? swig_override[n] : false);

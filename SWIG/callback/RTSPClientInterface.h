@@ -5,7 +5,7 @@
 class FrameCallback {
     public:
 		virtual ~FrameCallback() {}
-		virtual void OnFrame(const char* data, unsigned int len, unsigned int timestamp)
+		virtual void OnFrame(const void* pData, int nSize, unsigned int timestamp)
         {
             
         }

@@ -39,7 +39,8 @@ RTSPClientInterface::~RTSPClientInterface() {
 bool RTSPClientInterface::Init() {
     if(IMP(rtsp_client_)->cb_)
     {
-        IMP(rtsp_client_)->cb_->OnFrame("test",0,0);
+        const char p[] = "fuck bytearray";
+        IMP(rtsp_client_)->cb_->OnFrame(&p[0], sizeof(p) - 1,0);
     }
     return true;
 }
